@@ -6,7 +6,7 @@ context = zmq.Context()
 
 #create XPUB 
 xpub_socket = context.socket(zmq.XPUB)
-xpub_socket.connect(xpub_addr)
+xpub_socket.bind(xpub_addr)
 
 
 #create XSUB
