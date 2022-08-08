@@ -21,14 +21,16 @@ def init():
     socket.setsockopt_string(zmq.CURVE_SECRETKEY, "D:)Q[IlAW!ahhC2ac:9*A}h:p?([4%wOTJ%JR%cs")
 
     # sub to topic
-    socket.connect("tcp://127.0.0.1:5556")
+    socket.bind("tcp://127.0.0.1:5556")
     namepublisher = "Publisher gustavo".encode('utf-8')
 
     while True:
         message = input('input the message:')
-        socket.send_multipart([namepublisher, message.encode('utf-8')])
+        socket.send([namepublisher, message.encode('utf-8')])
         print("mensagem enviada para o xsub: "+ message)
-
+        #socket.send("%d %s" % (topic, messagedata))
+        time.sleep(1) 
+    
     context.destroy()
 
 
