@@ -1,31 +1,47 @@
+# subscriber em python
 import zmq
-import utils.z85
 
-port="5506"
-url="tcp://localhost:%s" % port
-
-context = zmq.Context()
+connect_xpubs=["5556", "5555"]
 
 def init():
-    socket = context.socket(zmq.SUBSCRIBE)
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
 
-    # configuring connection
+    socket.setsockopt(zmq.RCVHWM, 1000)
     socket.setsockopt(zmq.SNDHWM, 1000)
-    socket.setsockopt(zmq.IPV6,0)
-    socket.setsockopt(zmq.LINGER,0)
+    socket.setsockopt(zmq.IPV6, 0)
+    socket.setsockopt(zmq.LINGER, 0)
+    socket.connect("tcp://127.0.0.1:" + connect_xpubs[1])
+    socket.setsockopt_string(zmq.SUBSCRIBE, "gustavinho")
+    socket.setsockopt_string(zmq.SUBSCRIBE, "fabricio falando")
 
-    # set server key
-    socket.setsockopt(zmq.CURVE_SERVERKEY,"rq:rM>}U?@Lns47E1%kR.o@n%FcmmsL/@{H8]yf7")
-    # requester
-    socket.setsockopt(zmq.CURVE_PUBLICKEY, "Yne@$w-vo<fVvi]a<NY6T1ed:M$fCG*[IaLV{hID")
-    socket.setsockopt(zmq.CURVE_SECRETKEY, "D:)Q[IlAW!ahhC2ac:9*A}h:p?([4%wOTJ%JR%cs")
+    while True:
+        poller = zmq.Poller()
+        # connect using socket to outgoing messages to publicher
+        poller.register(socket, zmq.POLLOUT)
 
-    # execute the connection
-    socket.connect(url)
+        try:
+            events = poller.poll(1000)
+            #msg = socket.recv() # le do socket
+            #print(msg)
+
+            if events:
+                print("Message comes from...")
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            poller.unregister(socket)
+
+
+init()
 
 
 
-#while 1:
+
+
+
 
 
 
