@@ -29,6 +29,8 @@ def init():
         socket.send_multipart([namepublisher, message.encode('utf-8')])
         print("mensagem enviada para o xsub: "+ message)
 
+    context.destroy()
+
 
 init()
 
